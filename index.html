@@ -1,777 +1,338 @@
-# Casino Expansion for Crime Lords
-
-I'll add a full casino section to your Crime Lords game with roulette and blackjack. Here's the complete implementation with all the requested features:
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crime Lords - Casino Expansion</title>
+    <title>TV Subscription Support Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+            --danger: #e63946;
+            --warning: #fca311;
+            --gray: #adb5bd;
+            --dark-gray: #495057;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);
+            color: #333;
             min-height: 100vh;
             padding: 20px;
-            background-attachment: fixed;
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
         header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 20px 0;
             margin-bottom: 30px;
-            border-bottom: 2px solid #e94560;
-            position: relative;
         }
         
-        header h1 {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #e94560;
-            text-shadow: 0 0 10px rgba(233, 69, 96, 0.7);
-        }
-        
-        header p {
-            font-size: 1.2rem;
-            color: #4cc9f0;
-            margin-top: 10px;
-        }
-        
-        .nav-tabs {
+        .logo {
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
         }
         
-        .nav-btn {
-            background: rgba(30, 36, 48, 0.7);
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--success);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .auth-buttons {
             display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
         
-        .nav-btn:hover {
-            background: rgba(233, 69, 96, 0.8);
-            transform: translateY(-3px);
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
         }
         
-        .nav-btn.active {
-            background: #e94560;
-            box-shadow: 0 0 10px rgba(233, 69, 96, 0.7);
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--success);
+            color: var(--success);
         }
         
-        .screen {
-            background: rgba(25, 25, 45, 0.9);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            margin-bottom: 30px;
-            display: none;
-            border: 1px solid #302b63;
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
         }
         
-        .active {
-            display: block;
+        .btn-success {
+            background-color: var(--success);
+            color: var(--dark);
         }
         
-        h2 {
-            color: #4cc9f0;
-            margin-bottom: 20px;
-            font-size: 2rem;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
             text-align: center;
-            border-bottom: 2px solid #302b63;
-            padding-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .card-body {
+            padding: 30px;
         }
         
         .form-group {
             margin-bottom: 20px;
         }
         
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #a9a9b9;
+            font-weight: 500;
+            color: var(--dark);
         }
         
-        input, select, textarea {
+        .form-control {
             width: 100%;
             padding: 14px;
+            border: 2px solid var(--gray);
             border-radius: 8px;
-            border: 2px solid #2d3746;
-            background: #1e2430;
-            color: #fff;
             font-size: 1rem;
+            transition: border-color 0.3s;
         }
         
-        input:focus, select:focus, textarea:focus {
-            border-color: #4cc9f0;
+        .form-control:focus {
+            border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
         
-        button {
-            background: linear-gradient(to right, #e94560, #b52b46);
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 10px;
+        .hidden {
+            display: none;
         }
         
-        button:hover {
-            background: linear-gradient(to right, #ff5c79, #e94560);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(to right, #2d3746, #1a1a2e);
-        }
-        
-        .btn-secondary:hover {
-            background: linear-gradient(to right, #3a4659, #2d3746);
-        }
-        
-        .btn-casino {
-            background: linear-gradient(to right, #9d4edd, #7b2cbf);
-        }
-        
-        .btn-casino:hover {
-            background: linear-gradient(to right, #c77dff, #9d4edd);
-        }
-        
-        .flex-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .flex-buttons button {
-            flex: 1;
-        }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 25px;
-        }
-        
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .panel {
-            background: rgba(30, 36, 48, 0.7);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .panel h3 {
-            text-align: center;
-            color: #e94560;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            border-bottom: 1px solid #302b63;
-            padding-bottom: 10px;
-        }
-        
-        .stat-card {
-            background: #1a1a2e;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #4cc9f0;
-        }
-        
-        .stat-card h4 {
-            color: #a9a9b9;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .stat-card p {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #fff;
-        }
-        
-        .rank-display {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #0f3460, #16213e);
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-        
-        .rank-display h4 {
-            color: #f1f1f1;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-        
-        .rank-display .rank-name {
-            font-size: 1.8rem;
-            color: #f72585;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .game-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
-        
-        .crimes-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .crime-card {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            border: 2px solid #2d3746;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .crime-card:hover {
-            transform: translateY(-5px);
-            border-color: #4cc9f0;
-        }
-        
-        .crime-card h3 {
-            color: #e94560;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .crime-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        
-        .crime-stat {
-            text-align: center;
-        }
-        
-        .crime-stat h4 {
-            color: #a9a9b9;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .crime-stat p {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-        }
-        
-        .success-rate {
-            height: 20px;
-            background: #2d3746;
-            border-radius: 10px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-        
-        .success-bar {
-            height: 100%;
-            background: linear-gradient(to right, #e94560, #f72585);
-            border-radius: 10px;
-        }
-        
-        .cooldown {
-            background: rgba(30, 36, 48, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .cooldown h3 {
-            color: #e94560;
-            margin-bottom: 15px;
-        }
-        
-        .cooldown-timer {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4cc9f0;
-            margin: 15px 0;
-        }
-        
-        .cooldown button:disabled {
-            background: #2d3746;
-            cursor: not-allowed;
-        }
-        
-        .result-screen {
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .result-icon {
-            font-size: 5rem;
-            margin-bottom: 20px;
-        }
-        
-        .success {
-            color: #4ade80;
-        }
-        
-        .failure {
-            color: #e94560;
-        }
-        
-        .result-screen h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .result-screen p {
-            font-size: 1.4rem;
-            margin-bottom: 30px;
-        }
-        
-        .ranks-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .rank-card {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            border: 2px solid #2d3746;
-        }
-        
-        .rank-card.active {
-            border-color: #f72585;
-            box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
-        }
-        
-        .rank-card h3 {
-            color: #4cc9f0;
-            margin-bottom: 10px;
-        }
-        
-        .rank-card p {
-            color: #a9a9b9;
-            font-size: 0.9rem;
-        }
-        
-        .rank-card .min-xp {
-            color: #e94560;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            background: #0f3460;
-            color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transform: translateX(200%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            border-left: 4px solid #4cc9f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        /* Casino Styles */
-        .casino-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .casino-header {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #7b2cbf, #5a189a);
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .casino-header h2 {
-            color: #e0aaff;
-            border: none;
-            margin: 0;
-        }
-        
-        .casino-balance {
-            font-size: 1.5rem;
-            margin: 10px 0;
-            color: #ff9e00;
-        }
-        
-        .casino-games {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .game-selector {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid #5a189a;
-        }
-        
-        .game-selector:hover {
-            transform: translateY(-5px);
-            border-color: #9d4edd;
-            box-shadow: 0 5px 15px rgba(157, 78, 221, 0.3);
-        }
-        
-        .game-selector i {
-            font-size: 4rem;
-            color: #9d4edd;
-            margin-bottom: 15px;
-        }
-        
-        .game-selector h3 {
-            color: #e0aaff;
-            margin-bottom: 10px;
-        }
-        
-        /* Roulette Styles */
-        .roulette-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .roulette-wheel {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2d00f7, #6a00ff);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 5px solid #ff9e00;
-        }
-        
-        .roulette-ball {
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-        
-        .roulette-numbers {
-            position: relative;
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            background: #0d1b2a;
-        }
-        
-        .roulette-number {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .red {
-            background: #e63946;
-        }
-        
-        .black {
-            background: #1d3557;
-        }
-        
-        .green {
-            background: #2a9d8f;
-        }
-        
-        .betting-area {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .bet-type {
-            background: #1e2430;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid #5a189a;
-        }
-        
-        .bet-type:hover {
-            background: #2d3746;
-            transform: translateY(-3px);
-        }
-        
-        .bet-type.selected {
-            background: #9d4edd;
-            border-color: #e0aaff;
-            box-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
-        }
-        
-        .bet-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .bet-amount {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .bet-amount input {
-            flex: 1;
-        }
-        
-        .bet-amount button {
-            width: auto;
-            padding: 10px 15px;
-        }
-        
-        /* Blackjack Styles */
-        .blackjack-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .blackjack-table {
-            width: 100%;
-            max-width: 600px;
-            background: linear-gradient(135deg, #1a7431, #2d6a4f);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 5px solid #ffaa00;
-            position: relative;
-        }
-        
-        .dealer-area, .player-area {
-            min-height: 150px;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-        }
-        
-        .dealer-area h3, .player-area h3 {
-            color: #e0aaff;
-            margin-bottom: 10px;
-        }
-        
-        .cards-container {
-            display: flex;
-            gap: 10px;
-            min-height: 120px;
-            flex-wrap: wrap;
-        }
-        
-        .card {
-            width: 80px;
-            height: 120px;
-            background: white;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 5px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-        
-        .card.red {
-            color: #e63946;
-        }
-        
-        .card.black {
-            color: #1d3557;
-        }
-        
-        .card-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        
-        .card-suit {
-            font-size: 1.8rem;
-            align-self: center;
-        }
-        
-        .card-back {
-            background: linear-gradient(135deg, #9d4edd, #7b2cbf);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .card-back i {
-            font-size: 2.5rem;
-            color: white;
-        }
-        
-        .blackjack-controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .blackjack-controls button {
-            width: auto;
-            padding: 10px 20px;
-        }
-        
-        .score-display {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-        
-        .dealer-score {
-            top: 10px;
-            right: 20px;
-        }
-        
-        .player-score {
-            bottom: 80px;
-            right: 20px;
-        }
-        
-        .casino-result {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(30, 36, 48, 0.95);
+        .dashboard {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            border: 3px solid #ffaa00;
-            width: 80%;
-            max-width: 500px;
+            margin-top: 20px;
         }
         
-        .casino-result h2 {
-            color: #ffaa00;
-            border: none;
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 20px;
+        }
+        
+        .dashboard-header h2 {
+            color: var(--dark);
+            font-size: 1.8rem;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light);
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-success {
+            background-color: rgba(76, 201, 240, 0.2);
+            border: 1px solid var(--success);
+            color: var(--dark);
+        }
+        
+        .alert-danger {
+            background-color: rgba(230, 57, 70, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--dark);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .user-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-details h3 {
+            font-size: 1.4rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .user-details p {
+            color: var(--gray);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
         
-        .casino-result p {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+        .tab {
+            padding: 10px 20px;
+            background-color: var(--light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
         
         @media (max-width: 768px) {
-            .dashboard-grid {
+            .card-container {
                 grid-template-columns: 1fr;
             }
             
-            .nav-tabs {
+            header {
                 flex-direction: column;
-                align-items: center;
+                gap: 20px;
             }
             
-            .nav-btn {
+            .auth-buttons {
                 width: 100%;
-            }
-            
-            .betting-area {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .blackjack-controls {
-                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     </style>
@@ -779,1232 +340,595 @@ I'll add a full casino section to your Crime Lords game with roulette and blackj
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-skull"></i> Crime Lords</h1>
-            <p>Build your criminal empire from the streets to the top</p>
-            
-            <div class="nav-tabs">
-                <button class="nav-btn" data-screen="dashboard"><i class="fas fa-home"></i> Dashboard</button>
-                <button class="nav-btn" data-screen="casino"><i class="fas fa-dice"></i> Casino</button>
-                <button class="nav-btn" data-screen="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</button>
-                <button id="logout-btn" class="nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div class="logo">
+                <i class="fas fa-tv"></i>
+                <h1>TV Subscription Support</h1>
+            </div>
+            <div class="auth-buttons">
+                <button id="loginBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button id="signupBtn" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </button>
             </div>
         </header>
         
-        <!-- Home Screen -->
-        <div id="home-screen" class="screen active">
-            <h2>Enter the Underworld</h2>
-            <div class="flex-buttons">
-                <button id="login-btn">Login</button>
-                <button id="signup-btn">Sign Up</button>
-            </div>
-        </div>
-        
-        <!-- Login Screen -->
-        <div id="login-screen" class="screen">
-            <h2>Login to Your Empire</h2>
-            <div class="form-group">
-                <label for="login-username">Username</label>
-                <input type="text" id="login-username" placeholder="Enter your username">
-            </div>
-            <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" placeholder="Enter your password">
-            </div>
-            <button id="login-submit">Enter the Underworld</button>
-            <button class="btn-secondary" id="login-back">Back</button>
-        </div>
-        
-        <!-- Signup Screen -->
-        <div id="signup-screen" class="screen">
-            <h2>Create Your Criminal Profile</h2>
-            <div class="form-group">
-                <label for="signup-name">Full Name</label>
-                <input type="text" id="signup-name" placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-                <label for="signup-dob">Date of Birth</label>
-                <input type="date" id="signup-dob">
-            </div>
-            <div class="form-group">
-                <label for="signup-email">Email</label>
-                <input type="email" id="signup-email" placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-                <label for="signup-username">Username</label>
-                <input type="text" id="signup-username" placeholder="Choose a username">
-            </div>
-            <div class="form-group">
-                <label for="signup-password">Password</label>
-                <input type="password" id="signup-password" placeholder="Create a password">
-            </div>
-            <button id="signup-submit">Join the Syndicate</button>
-            <button class="btn-secondary" id="signup-back">Back</button>
-        </div>
-        
-        <!-- Dashboard Screen -->
-        <div id="dashboard-screen" class="screen">
-            <div class="dashboard-grid">
-                <div class="sidebar">
-                    <div class="panel">
-                        <h3>Your Criminal Profile</h3>
-                        <div class="stat-card">
-                            <h4>Criminal Name</h4>
-                            <p id="player-name">Vincent Corleone</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Net Worth</h4>
-                            <p>$<span id="player-money">5,000</span></p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Experience</h4>
-                            <p><span id="player-xp">250</span> XP</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Crimes Committed</h4>
-                            <p id="player-crimes">12</p>
-                        </div>
-                        
-                        <div class="rank-display">
-                            <h4>Your Rank</h4>
-                            <div class="rank-name" id="player-rank">Hustler</div>
-                        </div>
-                    </div>
-                    
-                    <div class="panel">
-                        <h3>Recent Activity</h3>
-                        <div class="stat-card">
-                            <h4>Casino Winnings</h4>
-                            <p>$<span id="casino-winnings">0</span></p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Last Crime</h4>
-                            <p id="last-crime">Bank Heist</p>
-                        </div>
-                    </div>
+        <div class="card-container">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i> Create Account
                 </div>
-                
-                <div class="game-content">
-                    <h2>Select Your Next Crime</h2>
-                    <div class="crimes-container">
-                        <!-- Crime cards will be inserted here by JavaScript -->
-                    </div>
-                    
-                    <div class="cooldown">
-                        <h3>Cooldown Timer</h3>
-                        <p>You must wait before committing another crime</p>
-                        <div class="cooldown-timer" id="cooldown-timer">02:00</div>
-                        <button id="commit-crime-btn" disabled>Commit Crime</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Casino Screen -->
-        <div id="casino-screen" class="screen">
-            <div class="casino-header">
-                <h2>Vegas Underground Casino</h2>
-                <div class="casino-balance">Your balance: $<span id="casino-balance">5000</span></div>
-            </div>
-            
-            <div class="casino-games">
-                <div class="game-selector" data-game="roulette">
-                    <i class="fas fa-dharmachakra"></i>
-                    <h3>Roulette</h3>
-                    <p>Bet on numbers, colors, or ranges</p>
-                </div>
-                
-                <div class="game-selector" data-game="blackjack">
-                    <i class="fas fa-club"></i>
-                    <h3>Blackjack</h3>
-                    <p>Beat the dealer without going over 21</p>
-                </div>
-            </div>
-            
-            <!-- Roulette Game -->
-            <div id="roulette-game" class="casino-game" style="display: none;">
-                <div class="roulette-container">
-                    <div class="roulette-wheel">
-                        <div class="roulette-ball"></div>
-                        <div class="roulette-numbers" id="roulette-numbers">
-                            <!-- Roulette numbers will be inserted here -->
+                <div class="card-body">
+                    <div id="signupForm">
+                        <div class="form-group">
+                            <label for="signupEmail">Email Address</label>
+                            <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email">
                         </div>
-                    </div>
-                    
-                    <div class="betting-area">
-                        <div class="bet-type" data-bet="red">Red</div>
-                        <div class="bet-type" data-bet="black">Black</div>
-                        <div class="bet-type" data-bet="even">Even</div>
-                        <div class="bet-type" data-bet="odd">Odd</div>
-                        <div class="bet-type" data-bet="1-18">1-18</div>
-                        <div class="bet-type" data-bet="19-36">19-36</div>
-                        <div class="bet-type" data-bet="1st12">1st 12</div>
-                        <div class="bet-type" data-bet="2nd12">2nd 12</div>
-                    </div>
-                    
-                    <div class="bet-controls">
-                        <div class="bet-amount">
-                            <input type="number" id="roulette-bet" min="10" max="5000" value="100">
-                            <button id="place-bet">Place Bet</button>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" class="form-control" placeholder="Create a password">
                         </div>
-                        <button id="spin-roulette" class="btn-casino">Spin Wheel</button>
-                        <button id="roulette-back" class="btn-secondary">Back to Games</button>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password">
+                        </div>
+                        <button id="submitSignup" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-check"></i> Sign Up
+                        </button>
                     </div>
                 </div>
             </div>
             
-            <!-- Blackjack Game -->
-            <div id="blackjack-game" class="casino-game" style="display: none;">
-                <div class="blackjack-container">
-                    <div class="blackjack-table">
-                        <div class="dealer-area">
-                            <h3>Dealer's Hand</h3>
-                            <div class="cards-container" id="dealer-cards">
-                                <!-- Dealer cards will be inserted here -->
-                            </div>
-                            <div class="score-display dealer-score">Score: <span id="dealer-score">0</span></div>
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </div>
+                <div class="card-body">
+                    <div id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email">
                         </div>
-                        
-                        <div class="player-area">
-                            <h3>Your Hand</h3>
-                            <div class="cards-container" id="player-cards">
-                                <!-- Player cards will be inserted here -->
-                            </div>
-                            <div class="score-display player-score">Score: <span id="player-score">0</span></div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password">
                         </div>
-                        
-                        <div class="blackjack-controls">
-                            <button id="hit-btn" class="btn-casino">Hit</button>
-                            <button id="stand-btn" class="btn-casino">Stand</button>
-                            <button id="double-btn" class="btn-casino">Double</button>
-                            <button id="deal-btn" class="btn-casino">New Hand</button>
-                        </div>
-                        
-                        <div class="bet-controls" style="margin-top: 20px;">
-                            <div class="bet-amount">
-                                <input type="number" id="blackjack-bet" min="10" max="5000" value="100">
-                                <button id="place-blackjack-bet">Place Bet</button>
-                            </div>
-                            <button id="blackjack-back" class="btn-secondary">Back to Games</button>
-                        </div>
+                        <button id="submitLogin" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-lock"></i> Login
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Crime Result Screen -->
-        <div id="result-screen" class="screen">
-            <div class="result-screen">
-                <div class="result-icon" id="result-icon">
-                    <i class="fas fa-question-circle"></i>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-question-circle"></i> How It Works
                 </div>
-                <h2 id="result-title">Crime Outcome</h2>
-                <p id="result-message">Your crime is being processed...</p>
-                <p id="result-cash"></p>
-                <button id="result-continue">Continue</button>
+                <div class="card-body">
+                    <ul style="padding-left: 20px; line-height: 2;">
+                        <li>Create an account with your email</li>
+                        <li>Log in to your account</li>
+                        <li>Add your TV subscription credentials</li>
+                        <li>Request shows or report issues</li>
+                        <li>Admins will handle your requests</li>
+                    </ul>
+                </div>
             </div>
         </div>
         
-        <!-- Casino Result Screen -->
-        <div id="casino-result" class="casino-result" style="display: none;">
-            <h2 id="casino-result-title">Game Result</h2>
-            <p id="casino-result-message">You won $0!</p>
-            <button id="casino-result-continue">Continue</button>
+        <div id="userDashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h2>User Dashboard</h2>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-icon" id="userInitial">U</div>
+                <div class="user-details">
+                    <h3 id="userEmail">user@example.com</h3>
+                    <p>TV Subscription User</p>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="subscription">Subscription</div>
+                <div class="tab" data-tab="request">Request Show</div>
+                <div class="tab" data-tab="ticket">Report Issue</div>
+            </div>
+            
+            <div class="tab-content active" id="subscriptionTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-key"></i> TV Subscription Credentials</h3>
+                    <div class="form-group">
+                        <label for="tvUsername">TV Username</label>
+                        <input type="text" id="tvUsername" class="form-control" placeholder="Enter your TV subscription username">
+                    </div>
+                    <div class="form-group">
+                        <label for="tvPassword">TV Password</label>
+                        <input type="password" id="tvPassword" class="form-control" placeholder="Enter your TV subscription password">
+                    </div>
+                    <button id="saveCredentials" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Credentials
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="requestTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-film"></i> Request a Show</h3>
+                    <div class="form-group">
+                        <label for="showTitle">Show Title</label>
+                        <input type="text" id="showTitle" class="form-control" placeholder="Enter show or movie title">
+                    </div>
+                    <div class="form-group">
+                        <label for="showType">Type</label>
+                        <select id="showType" class="form-control">
+                            <option value="movie">Movie</option>
+                            <option value="series">TV Series</option>
+                            <option value="documentary">Documentary</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalInfo">Additional Information</label>
+                        <textarea id="additionalInfo" class="form-control" rows="3" placeholder="Season, episode, year, or other details"></textarea>
+                    </div>
+                    <button id="submitRequest" class="btn btn-success">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="ticketTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-ticket-alt"></i> Report an Issue</h3>
+                    <div class="form-group">
+                        <label for="issueType">Issue Type</label>
+                        <select id="issueType" class="form-control">
+                            <option value="streaming">Streaming Problem</option>
+                            <option value="login">Login Issue</option>
+                            <option value="payment">Payment Problem</option>
+                            <option value="content">Missing Content</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="issueDescription">Description</label>
+                        <textarea id="issueDescription" class="form-control" rows="4" placeholder="Describe the issue in detail"></textarea>
+                    </div>
+                    <button id="submitTicket" class="btn btn-danger">
+                        <i class="fas fa-exclamation-circle"></i> Submit Ticket
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <div class="notification" id="notification">
-        <i class="fas fa-exclamation-circle"></i> <span id="notification-text">Notification message</span>
+        
+        <div id="adminDashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h2>Admin Dashboard</h2>
+                <button id="adminLogout" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-icon">A</div>
+                <div class="user-details">
+                    <h3>admin@tvportal.com</h3>
+                    <p>System Administrator</p>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="users">Users</div>
+                <div class="tab" data-tab="credentials">Credentials</div>
+                <div class="tab" data-tab="requests">Show Requests</div>
+                <div class="tab" data-tab="tickets">Support Tickets</div>
+            </div>
+            
+            <div class="tab-content active" id="usersTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-users"></i> Registered Users</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Signup Date</th>
+                                <th>Requests</th>
+                                <th>Tickets</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td>user1@example.com</td>
+                                <td>2023-07-15</td>
+                                <td>3</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>user2@example.com</td>
+                                <td>2023-07-20</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="credentialsTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-key"></i> TV Credentials</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>TV Username</th>
+                                <th>TV Password</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credentialsTable">
+                            <tr>
+                                <td>user1@example.com</td>
+                                <td>tv_user1</td>
+                                <td>••••••••</td>
+                                <td>2023-07-18</td>
+                            </tr>
+                            <tr>
+                                <td>user2@example.com</td>
+                                <td>streaming_user</td>
+                                <td>••••••••</td>
+                                <td>2023-07-22</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="requestsTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-film"></i> Show Requests</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTable">
+                            <tr>
+                                <td>user1@example.com</td>
+                                <td>The Matrix</td>
+                                <td>Movie</td>
+                                <td>2023-07-16</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>user2@example.com</td>
+                                <td>Stranger Things</td>
+                                <td>TV Series</td>
+                                <td>2023-07-21</td>
+                                <td>In Progress</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="ticketsTab">
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-ticket-alt"></i> Support Tickets</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Issue Type</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsTable">
+                            <tr>
+                                <td>user1@example.com</td>
+                                <td>Streaming Problem</td>
+                                <td>Buffering issues during prime time</td>
+                                <td>2023-07-17</td>
+                                <td>Resolved</td>
+                            </tr>
+                            <tr>
+                                <td>user2@example.com</td>
+                                <td>Login Issue</td>
+                                <td>Can't login on mobile app</td>
+                                <td>2023-07-23</td>
+                                <td>Open</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>TV Subscription Support Portal &copy; 2023 | All rights reserved</p>
+        </footer>
     </div>
     
     <script>
-        // Game Data
-        const ranks = [
-            { name: "Snitch", minXP: 0, color: "#a9a9b9" },
-            { name: "Thug", minXP: 100, color: "#4cc9f0" },
-            { name: "Hustler", minXP: 300, color: "#9d4edd" },
-            { name: "Gangster", minXP: 700, color: "#f72585" },
-            { name: "Kingpin", minXP: 1500, color: "#e9c46a" },
-            { name: "Crime Lord", minXP: 3000, color: "#e76f51" }
-        ];
-        
-        const crimes = [
-            { 
-                name: "Rob a Granny", 
-                minReward: 100, 
-                maxReward: 300,
-                baseSuccess: 80,
-                icon: "fas fa-cane"
-            },
-            { 
-                name: "Steal a Car", 
-                minReward: 300, 
-                maxReward: 800,
-                baseSuccess: 65,
-                icon: "fas fa-car"
-            },
-            { 
-                name: "Sell Drugs", 
-                minReward: 500, 
-                maxReward: 1500,
-                baseSuccess: 60,
-                icon: "fas fa-pills"
-            },
-            { 
-                name: "Kidnap", 
-                minReward: 1500, 
-                maxReward: 5000,
-                baseSuccess: 45,
-                icon: "fas fa-mask"
-            },
-            { 
-                name: "Drive-by Shooting", 
-                minReward: 3000, 
-                maxReward: 10000,
-                baseSuccess: 35,
-                icon: "fas fa-car-burst"
-            },
-            { 
-                name: "Hitman", 
-                minReward: 10000, 
-                maxReward: 50000,
-                baseSuccess: 25,
-                icon: "fas fa-gun"
-            }
-        ];
-        
-        // Roulette numbers: 0, 00, 1-36
-        const rouletteNumbers = [
-            { number: 0, color: "green" },
-            { number: "00", color: "green" },
-            { number: 1, color: "red" },
-            { number: 2, color: "black" },
-            { number: 3, color: "red" },
-            { number: 4, color: "black" },
-            { number: 5, color: "red" },
-            { number: 6, color: "black" },
-            { number: 7, color: "red" },
-            { number: 8, color: "black" },
-            { number: 9, color: "red" },
-            { number: 10, color: "black" },
-            { number: 11, color: "black" },
-            { number: 12, color: "red" },
-            { number: 13, color: "black" },
-            { number: 14, color: "red" },
-            { number: 15, color: "black" },
-            { number: 16, color: "red" },
-            { number: 17, color: "black" },
-            { number: 18, color: "red" },
-            { number: 19, color: "red" },
-            { number: 20, color: "black" },
-            { number: 21, color: "red" },
-            { number: 22, color: "black" },
-            { number: 23, color: "red" },
-            { number: 24, color: "black" },
-            { number: 25, color: "red" },
-            { number: 26, color: "black" },
-            { number: 27, color: "red" },
-            { number: 28, color: "black" },
-            { number: 29, color: "black" },
-            { number: 30, color: "red" },
-            { number: 31, color: "black" },
-            { number: 32, color: "red" },
-            { number: 33, color: "black" },
-            { number: 34, color: "red" },
-            { number: 35, color: "black" },
-            { number: 36, color: "red" }
-        ];
-        
-        // Card suits and values
-        const suits = ["♠", "♣", "♥", "♦"];
-        const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-        
-        // Game State
-        let currentUser = null;
-        let playerState = {
-            name: "",
-            money: 1000,
-            xp: 0,
-            crimesCommitted: 0,
-            crimeAttempts: {},
-            lastCrimeTime: 0,
-            casinoWinnings: 0,
-            lastCrime: ""
-        };
-        
-        // Casino State
-        let casinoState = {
-            rouletteBet: 100,
-            rouletteBetType: "",
-            blackjackBet: 100,
-            blackjackDeck: [],
-            dealerHand: [],
-            playerHand: [],
-            dealerScore: 0,
-            playerScore: 0,
-            gameInProgress: false
-        };
-        
-        let currentCrime = null;
-        let cooldownInterval = null;
-        
         // DOM Elements
-        const screens = {
-            home: document.getElementById('home-screen'),
-            login: document.getElementById('login-screen'),
-            signup: document.getElementById('signup-screen'),
-            dashboard: document.getElementById('dashboard-screen'),
-            casino: document.getElementById('casino-screen'),
-            result: document.getElementById('result-screen')
-        };
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminLogout = document.getElementById('adminLogout');
+        const submitSignup = document.getElementById('submitSignup');
+        const submitLogin = document.getElementById('submitLogin');
+        const userDashboard = document.getElementById('userDashboard');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const userInitial = document.getElementById('userInitial');
+        const userEmail = document.getElementById('userEmail');
+        const saveCredentials = document.getElementById('saveCredentials');
+        const submitRequest = document.getElementById('submitRequest');
+        const submitTicket = document.getElementById('submitTicket');
+        const tabs = document.querySelectorAll('.tab');
         
-        // User accounts storage
-        const ACCOUNTS_KEY = 'crime_lords_accounts';
+        // Current user state
+        let currentUser = null;
         
-        // Initialize user accounts
-        function initAccounts() {
-            if (!localStorage.getItem(ACCOUNTS_KEY)) {
-                localStorage.setItem(ACCOUNTS_KEY, JSON.stringify({}));
+        // Initialize app
+        function initApp() {
+            // Check if user is logged in
+            const loggedInUser = localStorage.getItem('currentUser');
+            if (loggedInUser) {
+                currentUser = JSON.parse(loggedInUser);
+                showDashboard();
             }
+            
+            // Add event listeners
+            loginBtn.addEventListener('click', () => showLoginForm());
+            signupBtn.addEventListener('click', () => showSignupForm());
+            logoutBtn && logoutBtn.addEventListener('click', logout);
+            adminLogout && adminLogout.addEventListener('click', logout);
+            
+            submitSignup.addEventListener('click', signup);
+            submitLogin.addEventListener('click', login);
+            
+            saveCredentials && saveCredentials.addEventListener('click', saveTVCredentials);
+            submitRequest && submitRequest.addEventListener('click', submitShowRequest);
+            submitTicket && submitTicket.addEventListener('click', submitSupportTicket);
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show corresponding tab content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
         }
         
-        // Save game state to localStorage
-        function saveGameState() {
+        // Show login form
+        function showLoginForm() {
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+        
+        // Show signup form
+        function showSignupForm() {
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        // User signup
+        function signup() {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!email || !password || !confirmPassword) {
+                showAlert('Please fill in all fields', 'danger');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'danger');
+                return;
+            }
+            
+            // Save user to localStorage
+            const user = {
+                email: email,
+                password: password,
+                isAdmin: email === 'admin@tvportal.com' // Demo admin account
+            };
+            
+            localStorage.setItem(email, JSON.stringify(user));
+            
+            // Send credentials to admin (simulated)
+            sendCredentialsToAdmin(email, password);
+            
+            // Show success message
+            showAlert('Account created successfully! Please log in.', 'success');
+            
+            // Clear form
+            showSignupForm();
+        }
+        
+        // User login
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'danger');
+                return;
+            }
+            
+            // Get user from localStorage
+            const userData = localStorage.getItem(email);
+            
+            if (!userData) {
+                showAlert('User not found', 'danger');
+                return;
+            }
+            
+            const user = JSON.parse(userData);
+            
+            if (user.password !== password) {
+                showAlert('Incorrect password', 'danger');
+                return;
+            }
+            
+            // Set current user
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            
+            // Show dashboard
+            showDashboard();
+        }
+        
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            userDashboard.classList.add('hidden');
+            adminDashboard.classList.add('hidden');
+        }
+        
+        // Show dashboard based on user type
+        function showDashboard() {
             if (!currentUser) return;
             
-            // Get all accounts
-            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
-            
-            // Update current user's state
-            accounts[currentUser.username] = {
-                user: currentUser,
-                state: playerState
-            };
-            
-            // Save back to localStorage
-            localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-            
-            // Show save indicator
-            showNotification("Game saved successfully");
-        }
-        
-        // Load game state from localStorage
-        function loadGameState(username) {
-            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
-            if (accounts[username]) {
-                currentUser = accounts[username].user;
-                playerState = accounts[username].state;
-                return true;
-            }
-            return false;
-        }
-        
-        // Create a new account
-        function createAccount(user, state) {
-            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
-            accounts[user.username] = {
-                user: user,
-                state: state
-            };
-            localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-        }
-        
-        // Switch screen function
-        function showScreen(screenName) {
-            // Hide all screens
-            Object.values(screens).forEach(screen => {
-                screen.classList.remove('active');
-            });
-            
-            // Show requested screen
-            screens[screenName].classList.add('active');
-            
-            // Update UI if needed
-            if (screenName === 'dashboard') {
-                initCrimeCards();
-                updatePlayerStats();
-            } else if (screenName === 'casino') {
-                document.getElementById('casino-balance').textContent = playerState.money.toLocaleString();
-                hideAllCasinoGames();
-            }
-        }
-        
-        // Notification system
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notification-text');
-            
-            notificationText.textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Initialize crime cards
-        function initCrimeCards() {
-            const container = document.querySelector('.crimes-container');
-            container.innerHTML = '';
-            
-            crimes.forEach((crime, index) => {
-                const attempts = playerState.crimeAttempts[crime.name] || 0;
-                const successRate = Math.min(crime.baseSuccess + (attempts * 2), 95);
-                
-                const card = document.createElement('div');
-                card.className = 'crime-card';
-                card.dataset.crimeIndex = index;
-                card.innerHTML = `
-                    <h3><i class="${crime.icon}"></i> ${crime.name}</h3>
-                    <div class="crime-stats">
-                        <div class="crime-stat">
-                            <h4>Reward</h4>
-                            <p>$${crime.minReward.toLocaleString()}-${crime.maxReward.toLocaleString()}</p>
-                        </div>
-                        <div class="crime-stat">
-                            <h4>Success</h4>
-                            <p>${successRate}%</p>
-                        </div>
-                    </div>
-                    <div class="success-rate">
-                        <div class="success-bar" style="width: ${successRate}%"></div>
-                    </div>
-                    <div class="crime-stat">
-                        <h4>Attempts</h4>
-                        <p>${attempts}</p>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => selectCrime(crime));
-                container.appendChild(card);
-            });
-        }
-        
-        // Update player stats display
-        function updatePlayerStats() {
-            document.getElementById('player-name').textContent = playerState.name;
-            document.getElementById('player-money').textContent = playerState.money.toLocaleString();
-            document.getElementById('player-xp').textContent = playerState.xp.toLocaleString();
-            document.getElementById('player-crimes').textContent = playerState.crimesCommitted;
-            document.getElementById('casino-winnings').textContent = playerState.casinoWinnings.toLocaleString();
-            document.getElementById('last-crime').textContent = playerState.lastCrime || "None";
-            
-            // Update rank display
-            const currentRank = ranks.find(rank => 
-                playerState.xp >= rank.minXP && 
-                (ranks.indexOf(rank) === ranks.length - 1 || 
-                 playerState.xp < ranks[ranks.indexOf(rank) + 1].minXP)
-            );
-            
-            if (currentRank) {
-                document.getElementById('player-rank').textContent = currentRank.name;
-            }
-        }
-        
-        // Select a crime
-        function selectCrime(crime) {
-            currentCrime = crime;
-            document.getElementById('commit-crime-btn').disabled = false;
-            showNotification(`${crime.name} selected! Ready to commit...`);
-        }
-        
-        // Commit crime
-        function commitCrime() {
-            if (!currentCrime) return;
-            
-            // Check cooldown
-            const now = Date.now();
-            const lastCrimeTime = playerState.lastCrimeTime || 0;
-            const cooldown = 120 * 1000; // 2 minutes
-            
-            if (now - lastCrimeTime < cooldown) {
-                showNotification("You must wait before committing another crime!");
-                return;
-            }
-            
-            // Calculate success
-            const attempts = playerState.crimeAttempts[currentCrime.name] || 0;
-            const successRate = Math.min(currentCrime.baseSuccess + (attempts * 2), 95);
-            const isSuccess = Math.random() * 100 < successRate;
-            
-            // Calculate reward
-            let reward = 0;
-            if (isSuccess) {
-                reward = Math.floor(
-                    Math.random() * (currentCrime.maxReward - currentCrime.minReward) + currentCrime.minReward
-                );
-                
-                // XP bonus for higher crimes
-                const xpBonus = currentCrime.maxReward / 100;
-                playerState.xp += Math.floor(xpBonus);
-            }
-            
-            // Update player state
-            playerState.crimesCommitted++;
-            playerState.crimeAttempts[currentCrime.name] = attempts + 1;
-            playerState.lastCrimeTime = now;
-            playerState.lastCrime = currentCrime.name;
-            
-            if (isSuccess) {
-                playerState.money += reward;
-            }
-            
-            // Save game state
-            saveGameState();
-            
-            // Show result screen
-            showCrimeResult(isSuccess, reward);
-            startCooldown();
-        }
-        
-        // Show crime result
-        function showCrimeResult(isSuccess, reward) {
-            const icon = document.getElementById('result-icon');
-            const title = document.getElementById('result-title');
-            const message = document.getElementById('result-message');
-            const cash = document.getElementById('result-cash');
-            
-            if (isSuccess) {
-                icon.innerHTML = '<i class="fas fa-trophy success"></i>';
-                title.textContent = "CRIME SUCCESSFUL!";
-                message.textContent = `You pulled off the ${currentCrime.name} without a hitch.`;
-                cash.textContent = `+$${reward.toLocaleString()}`;
-                cash.style.color = "#4ade80";
+            if (currentUser.isAdmin) {
+                // Admin dashboard
+                adminDashboard.classList.remove('hidden');
+                userDashboard.classList.add('hidden');
             } else {
-                icon.innerHTML = '<i class="fas fa-skull-crossbones failure"></i>';
-                title.textContent = "CRIME FAILED!";
-                message.textContent = `The ${currentCrime.name} went wrong. You barely got away.`;
-                cash.textContent = "+$0";
-                cash.style.color = "#e94560";
-            }
-            
-            showScreen('result');
-        }
-        
-        // Start cooldown timer
-        function startCooldown() {
-            clearInterval(cooldownInterval);
-            
-            const cooldownTime = 120; // 2 minutes in seconds
-            let timeLeft = cooldownTime;
-            
-            updateCooldownTimer(timeLeft);
-            
-            cooldownInterval = setInterval(() => {
-                timeLeft--;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(cooldownInterval);
-                    document.getElementById('commit-crime-btn').disabled = false;
-                    showNotification("Cooldown complete! Ready for another crime.");
-                }
-                
-                updateCooldownTimer(timeLeft);
-            }, 1000);
-        }
-        
-        // Update cooldown timer display
-        function updateCooldownTimer(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            const timerStr = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-            
-            document.getElementById('cooldown-timer').textContent = timerStr;
-            document.getElementById('commit-crime-btn').disabled = seconds > 0;
-        }
-        
-        // Initialize the game
-        function initGame() {
-            // Set up player state
-            playerState = {
-                name: currentUser.name,
-                money: 1000,
-                xp: 0,
-                crimesCommitted: 0,
-                crimeAttempts: {},
-                lastCrimeTime: 0,
-                casinoWinnings: 0,
-                lastCrime: ""
-            };
-            
-            // Initialize UI
-            initCrimeCards();
-            updatePlayerStats();
-            startCooldown();
-            
-            // Save initial state
-            saveGameState();
-        }
-        
-        // Load existing game if possible
-        function loadExistingGame() {
-            const username = document.getElementById('login-username').value;
-            if (loadGameState(username)) {
-                // Initialize UI with loaded state
-                initCrimeCards();
-                updatePlayerStats();
-                startCooldown();
-                
-                showScreen('dashboard');
-                showNotification(`Welcome back, ${currentUser.name}! Ready for crime?`);
-                return true;
-            }
-            return false;
-        }
-        
-        // Casino Functions
-        function hideAllCasinoGames() {
-            document.getElementById('roulette-game').style.display = 'none';
-            document.getElementById('blackjack-game').style.display = 'none';
-        }
-        
-        function showCasinoGame(gameId) {
-            hideAllCasinoGames();
-            document.getElementById(gameId).style.display = 'block';
-        }
-        
-        function initRoulette() {
-            const rouletteNumbersEl = document.getElementById('roulette-numbers');
-            rouletteNumbersEl.innerHTML = '';
-            
-            rouletteNumbers.forEach((num, index) => {
-                const angle = (index / rouletteNumbers.length) * 360;
-                const el = document.createElement('div');
-                el.className = `roulette-number ${num.color}`;
-                el.textContent = num.number;
-                el.style.transform = `rotate(${angle}deg) translate(135px) rotate(-${angle}deg)`;
-                rouletteNumbersEl.appendChild(el);
-            });
-            
-            // Reset bet type selection
-            document.querySelectorAll('.bet-type').forEach(bet => {
-                bet.classList.remove('selected');
-            });
-        }
-        
-        function spinRoulette() {
-            const betType = casinoState.rouletteBetType;
-            const betAmount = casinoState.rouletteBet;
-            
-            if (!betType) {
-                showNotification("Please select a bet type!");
-                return;
-            }
-            
-            if (betAmount > playerState.money) {
-                showNotification("You don't have enough money for that bet!");
-                return;
-            }
-            
-            // Deduct bet amount
-            playerState.money -= betAmount;
-            updatePlayerStats();
-            
-            // Spin animation
-            const wheel = document.querySelector('.roulette-wheel');
-            const spinDegrees = 1800 + Math.floor(Math.random() * 360);
-            wheel.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.3, 1)';
-            wheel.style.transform = `rotate(${spinDegrees}deg)`;
-            
-            // Determine result after spin
-            setTimeout(() => {
-                const resultIndex = Math.floor(Math.random() * rouletteNumbers.length);
-                const result = rouletteNumbers[resultIndex];
-                
-                // Determine if player won
-                let winMultiplier = 0;
-                let winAmount = 0;
-                let winMessage = "";
-                
-                switch (betType) {
-                    case "red":
-                        winMultiplier = (result.color === "red" && result.number !== 0 && result.number !== "00") ? 2 : 0;
-                        winMessage = result.color === "red" ? "Red wins!" : "Black wins!";
-                        break;
-                    case "black":
-                        winMultiplier = (result.color === "black") ? 2 : 0;
-                        winMessage = result.color === "black" ? "Black wins!" : "Red wins!";
-                        break;
-                    case "even":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number % 2 === 0) ? 2 : 0;
-                        winMessage = winMultiplier ? "Even wins!" : "Odd wins!";
-                        break;
-                    case "odd":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number % 2 === 1) ? 2 : 0;
-                        winMessage = winMultiplier ? "Odd wins!" : "Even wins!";
-                        break;
-                    case "1-18":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number <= 18) ? 2 : 0;
-                        winMessage = winMultiplier ? "1-18 wins!" : "19-36 wins!";
-                        break;
-                    case "19-36":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number > 18) ? 2 : 0;
-                        winMessage = winMultiplier ? "19-36 wins!" : "1-18 wins!";
-                        break;
-                    case "1st12":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number <= 12) ? 3 : 0;
-                        winMessage = winMultiplier ? "1st 12 wins!" : "Better luck next time!";
-                        break;
-                    case "2nd12":
-                        winMultiplier = (result.number !== 0 && result.number !== "00" && result.number > 12 && result.number <= 24) ? 3 : 0;
-                        winMessage = winMultiplier ? "2nd 12 wins!" : "Better luck next time!";
-                        break;
-                }
-                
-                winAmount = betAmount * winMultiplier;
-                
-                // Update player money
-                playerState.money += winAmount;
-                playerState.casinoWinnings += winAmount - betAmount;
-                
-                // Show result
-                const resultEl = document.getElementById('casino-result');
-                const resultTitle = document.getElementById('casino-result-title');
-                const resultMessage = document.getElementById('casino-result-message');
-                
-                resultTitle.textContent = winMultiplier ? "Winner!" : "You Lost!";
-                resultMessage.innerHTML = `Landed on: <b>${result.number} ${result.color}</b><br>
-                                          ${winMessage}<br>
-                                          ${winMultiplier ? `Won: $${winAmount.toLocaleString()}` : `Lost: $${betAmount.toLocaleString()}`}`;
-                
-                resultEl.style.display = 'block';
-                
-                // Update UI
-                updatePlayerStats();
-                saveGameState();
-            }, 5000);
-        }
-        
-        function initBlackjack() {
-            // Create a deck
-            casinoState.blackjackDeck = [];
-            for (let suit of suits) {
-                for (let value of values) {
-                    casinoState.blackjackDeck.push({ suit, value });
-                }
-            }
-            
-            // Shuffle deck
-            shuffleDeck(casinoState.blackjackDeck);
-            
-            // Reset hands
-            casinoState.dealerHand = [];
-            casinoState.playerHand = [];
-            casinoState.dealerScore = 0;
-            casinoState.playerScore = 0;
-            casinoState.gameInProgress = false;
-            
-            // Update UI
-            document.getElementById('dealer-cards').innerHTML = '';
-            document.getElementById('player-cards').innerHTML = '';
-            document.getElementById('dealer-score').textContent = '0';
-            document.getElementById('player-score').textContent = '0';
-            
-            // Enable bet button
-            document.getElementById('place-blackjack-bet').disabled = false;
-        }
-        
-        function shuffleDeck(deck) {
-            for (let i = deck.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [deck[i], deck[j]] = [deck[j], deck[i]];
+                // User dashboard
+                userDashboard.classList.remove('hidden');
+                adminDashboard.classList.add('hidden');
+                userEmail.textContent = currentUser.email;
+                userInitial.textContent = currentUser.email.charAt(0).toUpperCase();
             }
         }
         
-        function dealBlackjack() {
-            const betAmount = casinoState.blackjackBet;
-            
-            if (betAmount > playerState.money) {
-                showNotification("You don't have enough money for that bet!");
-                return;
-            }
-            
-            // Deduct bet amount
-            playerState.money -= betAmount;
-            updatePlayerStats();
-            
-            // Reset hands
-            casinoState.dealerHand = [];
-            casinoState.playerHand = [];
-            
-            // Deal cards
-            casinoState.playerHand.push(drawCard());
-            casinoState.dealerHand.push(drawCard());
-            casinoState.playerHand.push(drawCard());
-            casinoState.dealerHand.push(drawCard());
-            
-            // Update scores
-            updateBlackjackScores();
-            
-            // Update UI
-            renderBlackjackHands();
-            
-            // Enable game controls
-            casinoState.gameInProgress = true;
-            document.getElementById('hit-btn').disabled = false;
-            document.getElementById('stand-btn').disabled = false;
-            document.getElementById('double-btn').disabled = false;
-        }
-        
-        function drawCard() {
-            return casinoState.blackjackDeck.pop();
-        }
-        
-        function renderBlackjackHands() {
-            const dealerCards = document.getElementById('dealer-cards');
-            const playerCards = document.getElementById('player-cards');
-            
-            dealerCards.innerHTML = '';
-            playerCards.innerHTML = '';
-            
-            // Dealer's cards (first card hidden)
-            casinoState.dealerHand.forEach((card, index) => {
-                const cardEl = document.createElement('div');
-                if (index === 0 && casinoState.gameInProgress) {
-                    cardEl.className = 'card card-back';
-                    cardEl.innerHTML = '<i class="fas fa-question"></i>';
-                } else {
-                    cardEl.className = `card ${card.suit === '♥' || card.suit === '♦' ? 'red' : 'black'}`;
-                    cardEl.innerHTML = `
-                        <div class="card-value">${card.value}</div>
-                        <div class="card-suit">${card.suit}</div>
-                        <div class="card-value" style="transform: rotate(180deg);">${card.value}</div>
-                    `;
-                }
-                dealerCards.appendChild(cardEl);
-            });
-            
-            // Player's cards
-            casinoState.playerHand.forEach(card => {
-                const cardEl = document.createElement('div');
-                cardEl.className = `card ${card.suit === '♥' || card.suit === '♦' ? 'red' : 'black'}`;
-                cardEl.innerHTML = `
-                    <div class="card-value">${card.value}</div>
-                    <div class="card-suit">${card.suit}</div>
-                    <div class="card-value" style="transform: rotate(180deg);">${card.value}</div>
-                `;
-                playerCards.appendChild(cardEl);
-            });
-            
-            // Update scores
-            document.getElementById('dealer-score').textContent = casinoState.gameInProgress ? '?' : casinoState.dealerScore;
-            document.getElementById('player-score').textContent = casinoState.playerScore;
-        }
-        
-        function updateBlackjackScores() {
-            casinoState.playerScore = calculateScore(casinoState.playerHand);
-            casinoState.dealerScore = calculateScore(casinoState.dealerHand);
-        }
-        
-        function calculateScore(hand) {
-            let score = 0;
-            let aces = 0;
-            
-            for (let card of hand) {
-                if (card.value === 'A') {
-                    aces++;
-                    score += 11;
-                } else if (['K', 'Q', 'J'].includes(card.value)) {
-                    score += 10;
-                } else {
-                    score += parseInt(card.value);
-                }
-            }
-            
-            // Adjust for aces if score is over 21
-            while (score > 21 && aces > 0) {
-                score -= 10;
-                aces--;
-            }
-            
-            return score;
-        }
-        
-        function playerHit() {
-            if (!casinoState.gameInProgress) return;
-            
-            casinoState.playerHand.push(drawCard());
-            updateBlackjackScores();
-            renderBlackjackHands();
-            
-            if (casinoState.playerScore > 21) {
-                endBlackjackGame("Bust! You lose.");
-            }
-        }
-        
-        function playerStand() {
-            if (!casinoState.gameInProgress) return;
-            
-            casinoState.gameInProgress = false;
-            
-            // Dealer draws until 17 or higher
-            while (casinoState.dealerScore < 17) {
-                casinoState.dealerHand.push(drawCard());
-                updateBlackjackScores();
-            }
-            
-            renderBlackjackHands();
-            
-            // Determine winner
-            if (casinoState.dealerScore > 21) {
-                endBlackjackGame("Dealer busts! You win.");
-            } else if (casinoState.dealerScore > casinoState.playerScore) {
-                endBlackjackGame("Dealer wins!");
-            } else if (casinoState.dealerScore < casinoState.playerScore) {
-                endBlackjackGame("You win!");
-            } else {
-                endBlackjackGame("Push! It's a tie.");
-            }
-        }
-        
-        function endBlackjackGame(message) {
-            const betAmount = casinoState.blackjackBet;
-            let winAmount = 0;
-            
-            if (message.includes("win")) {
-                winAmount = betAmount * 2;
-                playerState.money += winAmount;
-                playerState.casinoWinnings += betAmount;
-            } else if (message.includes("tie")) {
-                winAmount = betAmount;
-                playerState.money += winAmount;
-            } else {
-                playerState.casinoWinnings -= betAmount;
-            }
-            
-            // Show result
-            const resultEl = document.getElementById('casino-result');
-            const resultTitle = document.getElementById('casino-result-title');
-            const resultMessage = document.getElementById('casino-result-message');
-            
-            resultTitle.textContent = message.includes("win") ? "Winner!" : "Game Over";
-            resultMessage.innerHTML = `${message}<br>
-                                      ${winAmount ? `Won: $${winAmount.toLocaleString()}` : `Lost: $${betAmount.toLocaleString()}`}`;
-            
-            resultEl.style.display = 'block';
-            
-            // Update UI
-            updatePlayerStats();
-            saveGameState();
-            
-            // Disable game controls
-            casinoState.gameInProgress = false;
-            document.getElementById('hit-btn').disabled = true;
-            document.getElementById('stand-btn').disabled = true;
-            document.getElementById('double-btn').disabled = true;
-        }
-        
-        // Event Listeners
-        document.getElementById('login-btn').addEventListener('click', () => showScreen('login'));
-        document.getElementById('signup-btn').addEventListener('click', () => showScreen('signup'));
-        
-        document.getElementById('login-back').addEventListener('click', () => showScreen('home'));
-        document.getElementById('signup-back').addEventListener('click', () => showScreen('home'));
-        
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            showScreen('home');
-            showNotification("Logged out successfully");
-        });
-        
-        document.getElementById('login-submit').addEventListener('click', () => {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+        // Save TV credentials
+        function saveTVCredentials() {
+            const username = document.getElementById('tvUsername').value;
+            const password = document.getElementById('tvPassword').value;
             
             if (!username || !password) {
-                showNotification("Please enter both username and password");
+                showAlert('Please enter both username and password', 'danger');
                 return;
             }
             
-            // Try to load existing account
-            if (loadExistingGame()) {
-                return;
-            }
-            
-            // Create new account if doesn't exist
-            currentUser = {
-                name: username,
+            // Save to localStorage
+            const tvCredentials = {
                 username: username,
-                email: `${username}@crimelords.com`,
-                dob: "1990-01-01"
+                password: password
             };
             
-            initGame();
-            showScreen('dashboard');
-            showNotification(`Welcome back, ${username}! Ready for crime?`);
-        });
-        
-        document.getElementById('signup-submit').addEventListener('click', () => {
-            const name = document.getElementById('signup-name').value;
-            const dob = document.getElementById('signup-dob').value;
-            const email = document.getElementById('signup-email').value;
-            const username = document.getElementById('signup-username').value;
-            const password = document.getElementById('signup-password').value;
+            localStorage.setItem(`${currentUser.email}_tv`, JSON.stringify(tvCredentials));
             
-            if (!name || !dob || !email || !username || !password) {
-                showNotification("Please fill all fields");
+            showAlert('TV credentials saved successfully', 'success');
+        }
+        
+        // Submit show request
+        function submitShowRequest() {
+            const title = document.getElementById('showTitle').value;
+            const type = document.getElementById('showType').value;
+            const info = document.getElementById('additionalInfo').value;
+            
+            if (!title) {
+                showAlert('Please enter a show title', 'danger');
                 return;
             }
             
-            // Create new account
-            currentUser = {
-                name: name,
-                email: email,
-                dob: dob,
-                username: username
+            // Save request to localStorage
+            const request = {
+                user: currentUser.email,
+                title: title,
+                type: type,
+                info: info,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Pending'
             };
             
-            // Create account in localStorage
-            createAccount(currentUser, {
-                name: name,
-                money: 1000,
-                xp: 0,
-                crimesCommitted: 0,
-                crimeAttempts: {},
-                lastCrimeTime: 0,
-                casinoWinnings: 0,
-                lastCrime: ""
-            });
+            // Get existing requests
+            const requests = JSON.parse(localStorage.getItem('showRequests') || '[]');
+            requests.push(request);
+            localStorage.setItem('showRequests', JSON.stringify(requests));
             
-            initGame();
-            showScreen('dashboard');
-            showNotification(`Welcome to Crime Lords, ${name}! Start your criminal empire.`);
-        });
+            // Clear form
+            document.getElementById('showTitle').value = '';
+            document.getElementById('additionalInfo').value = '';
+            
+            showAlert('Show request submitted successfully', 'success');
+        }
         
-        document.getElementById('commit-crime-btn').addEventListener('click', commitCrime);
-        document.getElementById('result-continue').addEventListener('click', () => {
-            // Update UI after crime
-            initCrimeCards();
-            updatePlayerStats();
-            saveGameState();
-            showScreen('dashboard');
-        });
-        
-        // Navigation buttons
-        document.querySelectorAll('.nav-btn[data-screen]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const screenName = btn.dataset.screen;
-                showScreen(screenName);
-                
-                // Update active button
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
-                btn.classList.add('active');
-            });
-        });
-        
-        // Casino game selectors
-        document.querySelectorAll('.game-selector').forEach(game => {
-            game.addEventListener('click', () => {
-                const gameId = game.dataset.game + '-game';
-                showCasinoGame(gameId);
-                
-                if (gameId === 'roulette-game') {
-                    initRoulette();
-                } else if (gameId === 'blackjack-game') {
-                    initBlackjack();
-                }
-            });
-        });
-        
-        // Roulette controls
-        document.querySelectorAll('.bet-type').forEach(bet => {
-            bet.addEventListener('click', () => {
-                document.querySelectorAll('.bet-type').forEach(b => {
-                    b.classList.remove('selected');
-                });
-                bet.classList.add('selected');
-                casinoState.rouletteBetType = bet.dataset.bet;
-            });
-        });
-        
-        document.getElementById('roulette-bet').addEventListener('input', (e) => {
-            casinoState.rouletteBet = parseInt(e.target.value) || 100;
-        });
-        
-        document.getElementById('spin-roulette').addEventListener('click', spinRoulette);
-        document.getElementById('roulette-back').addEventListener('click', () => showScreen('casino'));
-        
-        // Blackjack controls
-        document.getElementById('blackjack-bet').addEventListener('input', (e) => {
-            casinoState.blackjackBet = parseInt(e.target.value) || 100;
-        });
-        
-        document.getElementById('place-blackjack-bet').addEventListener('click', () => {
-            dealBlackjack();
-            document.getElementById('place-blackjack-bet').disabled = true;
-        });
-        
-        document.getElementById('hit-btn').addEventListener('click', playerHit);
-        document.getElementById('stand-btn').addEventListener('click', playerStand);
-        document.getElementById('double-btn').addEventListener('click', () => {
-            // Double the bet and hit once
-            casinoState.blackjackBet *= 2;
-            playerHit();
-            if (casinoState.gameInProgress) {
-                playerStand();
+        // Submit support ticket
+        function submitSupportTicket() {
+            const type = document.getElementById('issueType').value;
+            const description = document.getElementById('issueDescription').value;
+            
+            if (!description) {
+                showAlert('Please describe the issue', 'danger');
+                return;
             }
-        });
+            
+            // Save ticket to localStorage
+            const ticket = {
+                user: currentUser.email,
+                type: type,
+                description: description,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Open'
+            };
+            
+            // Get existing tickets
+            const tickets = JSON.parse(localStorage.getItem('supportTickets') || '[]');
+            tickets.push(ticket);
+            localStorage.setItem('supportTickets', JSON.stringify(tickets));
+            
+            // Clear form
+            document.getElementById('issueDescription').value = '';
+            
+            showAlert('Support ticket submitted successfully', 'success');
+        }
         
-        document.getElementById('deal-btn').addEventListener('click', () => {
-            initBlackjack();
-        });
+        // Send credentials to admin (simulated)
+        function sendCredentialsToAdmin(email, password) {
+            // In a real application, this would send an email to the admin
+            console.log(`Sending credentials to admin: ${email} / ${password}`);
+            showAlert(`Your credentials have been sent to the admin (s3an23@hotmail.co.uk)`, 'success');
+        }
         
-        document.getElementById('blackjack-back').addEventListener('click', () => showScreen('casino'));
+        // Show alert message
+        function showAlert(message, type) {
+            // In a real app, this would display a styled alert on the page
+            alert(`${type.toUpperCase()}: ${message}`);
+        }
         
-        // Casino result continue button
-        document.getElementById('casino-result-continue').addEventListener('click', () => {
-            document.getElementById('casino-result').style.display = 'none';
-        });
-        
-        // Initialize accounts system
-        initAccounts();
-        
-        // Initialize the home screen
-        showScreen('home');
+        // Initialize the application
+        initApp();
     </script>
 </body>
 </html>
-```
-
-## Casino Features Added
-
-### Roulette Game
-- Realistic roulette wheel with numbers 0-36 and 00
-- Betting options: red/black, even/odd, 1-18/19-36, 1st/2nd 12
-- Dynamic wheel spinning animation
-- Win calculation with appropriate multipliers
-- Bet amount controls
-
-### Blackjack Game
-- Full card game against a dealer
-- Card dealing with visual representation
-- Game options: Hit, Stand, Double
-- Automatic dealer play (hits until 17)
-- Win/loss detection (blackjack, bust, etc.)
-- Score tracking for player and dealer
-
-### User Interface
-- Dedicated casino section accessible from navigation
-- Game selection screen with attractive cards
-- Real-time balance display
-- Game result popups with animations
-- Responsive design for all devices
-
-### Game Integration
-- Money system connected to main game funds
-- Casino winnings tracked in player stats
-- Auto-saving after each game
-- Cooldown system for crimes still works
-
-### How to Use
-1. **Access Casino**: Click the "Casino" button in the top navigation
-2. **Choose Game**: Select either Roulette or Blackjack
-3. **Place Bets**: 
-   - For Roulette: Select a bet type and amount
-   - For Blackjack: Set your bet amount
-4. **Play**: 
-   - Roulette: Click "Spin Wheel" and watch the animation
-   - Blackjack: Use Hit/Stand/Double buttons to play your hand
-5. **Results**: See if you won and how much you earned
-
-The casino is fully integrated with the existing game - all winnings are added to your criminal empire's funds, and everything is saved automatically!
