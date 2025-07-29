@@ -1,10 +1,14 @@
+# Crime Lords: Advanced Game with Account Saving
+
+I'll create a complete crime-themed game with account persistence using JavaScript and localStorage. This will allow users to save their progress across sessions.
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crime Lords - Ultimate Edition</title>
+    <title>Crime Lords - Build Your Criminal Empire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -15,7 +19,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
@@ -23,7 +27,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -47,38 +51,6 @@
             font-size: 1.2rem;
             color: #4cc9f0;
             margin-top: 10px;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .nav-btn {
-            background: rgba(30, 36, 48, 0.7);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .nav-btn:hover {
-            background: rgba(233, 69, 96, 0.8);
-            transform: translateY(-3px);
-        }
-        
-        .nav-btn.active {
-            background: #e94560;
-            box-shadow: 0 0 10px rgba(233, 69, 96, 0.7);
         }
         
         .screen {
@@ -114,7 +86,7 @@
             color: #a9a9b9;
         }
         
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 14px;
             border-radius: 8px;
@@ -124,7 +96,7 @@
             font-size: 1rem;
         }
         
-        input:focus, select:focus, textarea:focus {
+        input:focus, select:focus {
             border-color: #4cc9f0;
             outline: none;
         }
@@ -169,32 +141,24 @@
             flex: 1;
         }
         
-        .dashboard-grid {
+        .dashboard {
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 25px;
         }
         
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .panel {
+        .player-stats {
             background: rgba(30, 36, 48, 0.7);
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        .panel h3 {
+        .player-stats h3 {
             text-align: center;
             color: #e94560;
             margin-bottom: 20px;
             font-size: 1.5rem;
-            border-bottom: 1px solid #302b63;
-            padding-bottom: 10px;
         }
         
         .stat-card {
@@ -258,8 +222,6 @@
             transition: transform 0.3s ease;
             border: 2px solid #2d3746;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
         }
         
         .crime-card:hover {
@@ -271,9 +233,6 @@
             color: #e94560;
             margin-bottom: 15px;
             font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         
         .crime-stats {
@@ -414,239 +373,41 @@
             transition: transform 0.3s ease;
             z-index: 1000;
             border-left: 4px solid #4cc9f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         
         .notification.show {
             transform: translateX(0);
         }
         
-        /* Shop Styles */
-        .shop-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .weapon-card {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            border: 2px solid #2d3746;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .weapon-card:hover {
-            transform: translateY(-5px);
-            border-color: #4cc9f0;
-        }
-        
-        .weapon-icon {
-            font-size: 3rem;
-            color: #e94560;
-            margin-bottom: 15px;
-        }
-        
-        .weapon-stats {
-            margin: 15px 0;
-        }
-        
-        .weapon-stat {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        /* Chat Styles */
-        .chat-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            height: 500px;
-        }
-        
-        .chat-sidebar {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 15px;
-            overflow-y: auto;
-        }
-        
-        .chat-messages {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        
-        .message-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-        
-        .message {
-            background: #2d3746;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        
-        .message-sender {
-            font-weight: bold;
-            color: #4cc9f0;
-        }
-        
-        .message-time {
-            color: #a9a9b9;
-            font-size: 0.8rem;
-        }
-        
-        .private-message {
-            background: #302b63;
-            border-left: 3px solid #e94560;
-        }
-        
-        .user-list {
-            list-style: none;
-        }
-        
-        .user-item {
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .user-item:hover {
-            background: #2d3746;
-        }
-        
-        .user-item.active {
-            background: #302b63;
-            border-left: 3px solid #e94560;
-        }
-        
-        .user-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4ade80;
-        }
-        
-        .user-status.offline {
-            background: #a9a9b9;
-        }
-        
-        /* Leaderboard Styles */
-        .leaderboard {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #1e2430;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #2d3746;
-        }
-        
-        th {
-            background: #0f3460;
-            color: #4cc9f0;
-        }
-        
-        tr:hover {
-            background: #2d3746;
-        }
-        
-        .current-user {
-            background: rgba(76, 201, 240, 0.1);
-            border-left: 3px solid #4cc9f0;
-        }
-        
-        /* New Users Styles */
-        .new-users-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .user-card {
-            background: #1e2430;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            border: 2px solid #2d3746;
-            transition: transform 0.3s ease;
-        }
-        
-        .user-card:hover {
-            transform: translateY(-5px);
-            border-color: #4cc9f0;
-        }
-        
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #302b63;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 1.5rem;
-        }
-        
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .chat-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5rem;
+            .dashboard {
+                grid-template-columns: 1fr;
             }
             
             .flex-buttons {
                 flex-direction: column;
             }
             
-            .nav-tabs {
-                flex-direction: column;
-                align-items: center;
+            header h1 {
+                font-size: 2.5rem;
             }
-            
-            .nav-btn {
-                width: 100%;
-            }
+        }
+        
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4ade80;
+            color: #1a1a2e;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .save-indicator.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -655,15 +416,6 @@
         <header>
             <h1><i class="fas fa-skull"></i> Crime Lords</h1>
             <p>Build your criminal empire from the streets to the top</p>
-            
-            <div class="nav-tabs">
-                <button class="nav-btn" data-screen="dashboard"><i class="fas fa-home"></i> Dashboard</button>
-                <button class="nav-btn" data-screen="shop"><i class="fas fa-shopping-cart"></i> Black Market</button>
-                <button class="nav-btn" data-screen="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</button>
-                <button class="nav-btn" data-screen="chat"><i class="fas fa-comments"></i> Crime Chat</button>
-                <button class="nav-btn" data-screen="inbox"><i class="fas fa-inbox"></i> Inbox</button>
-                <button id="logout-btn" class="nav-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
         </header>
         
         <!-- Home Screen -->
@@ -717,46 +469,34 @@
             <button class="btn-secondary" id="signup-back">Back</button>
         </div>
         
-        <!-- Dashboard Screen -->
+        <!-- Game Dashboard -->
         <div id="dashboard-screen" class="screen">
-            <div class="dashboard-grid">
-                <div class="sidebar">
-                    <div class="panel">
-                        <h3>Your Criminal Profile</h3>
-                        <div class="stat-card">
-                            <h4>Criminal Name</h4>
-                            <p id="player-name">Vincent Corleone</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Net Worth</h4>
-                            <p>$<span id="player-money">5,000</span></p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Experience</h4>
-                            <p><span id="player-xp">250</span> XP</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Crimes Committed</h4>
-                            <p id="player-crimes">12</p>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <h4>Weapons</h4>
-                            <p id="player-weapons">Pistol, Knife</p>
-                        </div>
-                        
-                        <div class="rank-display">
-                            <h4>Your Rank</h4>
-                            <div class="rank-name" id="player-rank">Hustler</div>
-                        </div>
+            <div class="dashboard">
+                <div class="player-stats">
+                    <h3>Your Criminal Profile</h3>
+                    <div class="stat-card">
+                        <h4>Criminal Name</h4>
+                        <p id="player-name">Vincent Corleone</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Net Worth</h4>
+                        <p>$<span id="player-money">5000</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Experience</h4>
+                        <p><span id="player-xp">250</span> XP</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Crimes Committed</h4>
+                        <p id="player-crimes">12</p>
                     </div>
                     
-                    <div class="panel">
-                        <h3>New Recruits</h3>
-                        <div class="new-users-grid" id="new-users-container">
-                            <!-- New users will be added here -->
-                        </div>
+                    <div class="rank-display">
+                        <h4>Your Rank</h4>
+                        <div class="rank-name" id="player-rank">Hustler</div>
                     </div>
+                    
+                    <button id="logout-btn" class="btn-secondary" style="margin-top: 20px;">Logout</button>
                 </div>
                 
                 <div class="game-content">
@@ -782,91 +522,6 @@
             </div>
         </div>
         
-        <!-- Shop Screen -->
-        <div id="shop-screen" class="screen">
-            <h2>Black Market Weapons</h2>
-            <p class="text-center" style="margin-bottom: 20px; color: #4cc9f0;">Your money: $<span id="shop-money">5,000</span></p>
-            
-            <div class="shop-container">
-                <!-- Weapon cards will be inserted here by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Leaderboard Screen -->
-        <div id="leaderboard-screen" class="screen">
-            <h2>Criminal Leaderboard</h2>
-            
-            <div class="leaderboard">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Username</th>
-                            <th>Net Worth</th>
-                            <th>XP</th>
-                            <th>Crimes</th>
-                            <th>Rank</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- Leaderboard rows will be inserted here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Chat Screen -->
-        <div id="chat-screen" class="screen">
-            <h2>Crime Network Chat</h2>
-            
-            <div class="chat-container">
-                <div class="chat-sidebar">
-                    <h3>Online Criminals</h3>
-                    <ul class="user-list" id="online-users">
-                        <!-- Online users will be added here -->
-                    </ul>
-                </div>
-                
-                <div class="chat-messages">
-                    <h3>Public Chat</h3>
-                    <div class="message-list" id="public-chat">
-                        <!-- Public messages will be added here -->
-                    </div>
-                    
-                    <div class="form-group">
-                        <textarea id="public-message" placeholder="Type your message to the crime network..."></textarea>
-                        <button id="send-public">Send Message</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Inbox Screen -->
-        <div id="inbox-screen" class="screen">
-            <h2>Private Communications</h2>
-            
-            <div class="chat-container">
-                <div class="chat-sidebar">
-                    <h3>Your Contacts</h3>
-                    <ul class="user-list" id="inbox-contacts">
-                        <!-- Contacts will be added here -->
-                    </ul>
-                </div>
-                
-                <div class="chat-messages">
-                    <h3>Private Messages with <span id="current-contact">Select a contact</span></h3>
-                    <div class="message-list" id="private-chat">
-                        <!-- Private messages will be added here -->
-                    </div>
-                    
-                    <div class="form-group">
-                        <textarea id="private-message" placeholder="Type your private message..."></textarea>
-                        <button id="send-private">Send Private Message</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <!-- Crime Result Screen -->
         <div id="result-screen" class="screen">
             <div class="result-screen">
@@ -884,9 +539,13 @@
     <div class="notification" id="notification">
         <i class="fas fa-exclamation-circle"></i> <span id="notification-text">Notification message</span>
     </div>
+    
+    <div class="save-indicator" id="save-indicator">
+        <i class="fas fa-save"></i> Game Saved!
+    </div>
 
     <script>
-        // Enhanced Game Data
+        // Game Data
         const ranks = [
             { name: "Snitch", minXP: 0, color: "#a9a9b9" },
             { name: "Thug", minXP: 100, color: "#4cc9f0" },
@@ -902,84 +561,43 @@
                 minReward: 100, 
                 maxReward: 300,
                 baseSuccess: 80,
-                icon: "fas fa-cane",
-                weaponBoost: 5
+                icon: "fas fa-cane"
             },
             { 
                 name: "Steal a Car", 
                 minReward: 300, 
                 maxReward: 800,
                 baseSuccess: 65,
-                icon: "fas fa-car",
-                weaponBoost: 8
+                icon: "fas fa-car"
             },
             { 
                 name: "Sell Drugs", 
                 minReward: 500, 
                 maxReward: 1500,
                 baseSuccess: 60,
-                icon: "fas fa-pills",
-                weaponBoost: 10
+                icon: "fas fa-pills"
             },
             { 
                 name: "Kidnap", 
                 minReward: 1500, 
                 maxReward: 5000,
                 baseSuccess: 45,
-                icon: "fas fa-mask",
-                weaponBoost: 15
+                icon: "fas fa-mask"
             },
             { 
                 name: "Drive-by Shooting", 
                 minReward: 3000, 
                 maxReward: 10000,
                 baseSuccess: 35,
-                icon: "fas fa-car-burst",
-                weaponBoost: 20
+                icon: "fas fa-car-burst"
             },
             { 
                 name: "Hitman", 
                 minReward: 10000, 
                 maxReward: 50000,
                 baseSuccess: 25,
-                icon: "fas fa-gun",
-                weaponBoost: 25
-            },
-            { 
-                name: "Bank Heist", 
-                minReward: 20000, 
-                maxReward: 100000,
-                baseSuccess: 15,
-                icon: "fas fa-vault",
-                weaponBoost: 30
-            },
-            { 
-                name: "Jewelry Store", 
-                minReward: 8000, 
-                maxReward: 40000,
-                baseSuccess: 20,
-                icon: "fas fa-gem",
-                weaponBoost: 25
-            },
-            { 
-                name: "Cyber Heist", 
-                minReward: 15000, 
-                maxReward: 75000,
-                baseSuccess: 18,
-                icon: "fas fa-laptop-code",
-                weaponBoost: 35
+                icon: "fas fa-gun"
             }
-        ];
-        
-        const weapons = [
-            { id: 1, name: "Knife", price: 500, damage: 5, successBoost: 2, icon: "fas fa-knife" },
-            { id: 2, name: "Pistol", price: 2000, damage: 15, successBoost: 5, icon: "fas fa-gun" },
-            { id: 3, name: "Shotgun", price: 5000, damage: 30, successBoost: 8, icon: "fas fa-gun" },
-            { id: 4, name: "SMG", price: 10000, damage: 45, successBoost: 12, icon: "fas fa-gun" },
-            { id: 5, name: "Assault Rifle", price: 20000, damage: 65, successBoost: 15, icon: "fas fa-gun" },
-            { id: 6, name: "Sniper Rifle", price: 35000, damage: 90, successBoost: 20, icon: "fas fa-gun" },
-            { id: 7, name: "Grenades", price: 15000, damage: 75, successBoost: 18, icon: "fas fa-bomb" },
-            { id: 8, name: "RPG", price: 50000, damage: 120, successBoost: 25, icon: "fas fa-rocket" }
         ];
         
         // Game State
@@ -990,38 +608,11 @@
             xp: 0,
             crimesCommitted: 0,
             crimeAttempts: {},
-            lastCrimeTime: 0,
-            weapons: [],
-            contacts: [],
-            messages: {}
+            lastCrimeTime: 0
         };
-        
-        // Demo Users (for leaderboard and chat)
-        const demoUsers = [
-            { username: "Tony_Montana", money: 125000, xp: 2850, crimes: 42, rank: "Crime Lord" },
-            { username: "Vito_Corleone", money: 98500, xp: 2750, crimes: 38, rank: "Crime Lord" },
-            { username: "Frank_Lucas", money: 76500, xp: 2100, crimes: 35, rank: "Kingpin" },
-            { username: "Scarface", money: 54200, xp: 1850, crimes: 31, rank: "Kingpin" },
-            { username: "Niko_Bellic", money: 32150, xp: 1420, crimes: 27, rank: "Gangster" },
-            { username: "Al_Capone", money: 28700, xp: 1350, crimes: 24, rank: "Gangster" },
-            { username: "John_Wick", money: 15600, xp: 920, crimes: 19, rank: "Hustler" },
-            { username: "Tyler_Durden", money: 9800, xp: 650, crimes: 15, rank: "Hustler" },
-            { username: "Dexter", money: 5400, xp: 420, crimes: 12, rank: "Thug" }
-        ];
-        
-        // Demo Chat Messages
-        const demoMessages = [
-            { sender: "Tony_Montana", text: "Who wants in on the casino job this Friday? Need 3 guys.", time: "10:30 AM" },
-            { sender: "Niko_Bellic", text: "I'm in. What's the cut?", time: "10:32 AM" },
-            { sender: "Vito_Corleone", text: "Remember the golden rule: never get high on your own supply.", time: "10:35 AM" },
-            { sender: "Scarface", text: "Anyone got a clean driver for a quick pickup? Paying $5k", time: "10:40 AM" },
-            { sender: "Frank_Lucas", text: "New shipment arriving at the docks tonight. Be ready.", time: "10:45 AM" },
-            { sender: "Al_Capone", text: "Police are cracking down in the north district. Avoid if possible.", time: "10:50 AM" }
-        ];
         
         let currentCrime = null;
         let cooldownInterval = null;
-        let currentContact = null;
         
         // DOM Elements
         const screens = {
@@ -1029,12 +620,63 @@
             login: document.getElementById('login-screen'),
             signup: document.getElementById('signup-screen'),
             dashboard: document.getElementById('dashboard-screen'),
-            shop: document.getElementById('shop-screen'),
-            leaderboard: document.getElementById('leaderboard-screen'),
-            chat: document.getElementById('chat-screen'),
-            inbox: document.getElementById('inbox-screen'),
             result: document.getElementById('result-screen')
         };
+        
+        // User accounts storage
+        const ACCOUNTS_KEY = 'crime_lords_accounts';
+        
+        // Initialize user accounts
+        function initAccounts() {
+            if (!localStorage.getItem(ACCOUNTS_KEY)) {
+                localStorage.setItem(ACCOUNTS_KEY, JSON.stringify({}));
+            }
+        }
+        
+        // Save game state to localStorage
+        function saveGameState() {
+            if (!currentUser) return;
+            
+            // Get all accounts
+            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
+            
+            // Update current user's state
+            accounts[currentUser.username] = {
+                user: currentUser,
+                state: playerState
+            };
+            
+            // Save back to localStorage
+            localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+            
+            // Show save indicator
+            const saveIndicator = document.getElementById('save-indicator');
+            saveIndicator.classList.add('show');
+            setTimeout(() => {
+                saveIndicator.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Load game state from localStorage
+        function loadGameState(username) {
+            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
+            if (accounts[username]) {
+                currentUser = accounts[username].user;
+                playerState = accounts[username].state;
+                return true;
+            }
+            return false;
+        }
+        
+        // Create a new account
+        function createAccount(user, state) {
+            const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
+            accounts[user.username] = {
+                user: user,
+                state: state
+            };
+            localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+        }
         
         // Switch screen function
         function showScreen(screenName) {
@@ -1045,22 +687,6 @@
             
             // Show requested screen
             screens[screenName].classList.add('active');
-            
-            // Update UI if needed
-            if (screenName === 'dashboard') {
-                initCrimeCards();
-                initRankCards();
-                updatePlayerStats();
-                loadNewUsers();
-            } else if (screenName === 'shop') {
-                initWeaponShop();
-            } else if (screenName === 'leaderboard') {
-                initLeaderboard();
-            } else if (screenName === 'chat') {
-                initPublicChat();
-            } else if (screenName === 'inbox') {
-                initInbox();
-            }
         }
         
         // Notification system
@@ -1093,7 +719,7 @@
                     <div class="crime-stats">
                         <div class="crime-stat">
                             <h4>Reward</h4>
-                            <p>$${crime.minReward.toLocaleString()}-${crime.maxReward.toLocaleString()}</p>
+                            <p>$${crime.minReward}-${crime.maxReward}</p>
                         </div>
                         <div class="crime-stat">
                             <h4>Success</h4>
@@ -1111,238 +737,6 @@
                 
                 card.addEventListener('click', () => selectCrime(crime));
                 container.appendChild(card);
-            });
-        }
-        
-        // Initialize weapon shop
-        function initWeaponShop() {
-            const container = document.querySelector('.shop-container');
-            container.innerHTML = '';
-            
-            document.getElementById('shop-money').textContent = playerState.money.toLocaleString();
-            
-            weapons.forEach(weapon => {
-                const owned = playerState.weapons.some(w => w.id === weapon.id);
-                const canAfford = playerState.money >= weapon.price;
-                
-                const card = document.createElement('div');
-                card.className = 'weapon-card';
-                card.innerHTML = `
-                    <div class="weapon-icon">
-                        <i class="${weapon.icon}"></i>
-                    </div>
-                    <h3>${weapon.name}</h3>
-                    <div class="weapon-stats">
-                        <div class="weapon-stat">
-                            <span>Damage:</span>
-                            <span>${weapon.damage}</span>
-                        </div>
-                        <div class="weapon-stat">
-                            <span>Success Boost:</span>
-                            <span>+${weapon.successBoost}%</span>
-                        </div>
-                    </div>
-                    <div class="weapon-stat">
-                        <span>Price:</span>
-                        <span>$${weapon.price.toLocaleString()}</span>
-                    </div>
-                    <button class="${owned ? 'btn-secondary' : ''}" data-weapon-id="${weapon.id}" 
-                        ${owned || !canAfford ? 'disabled' : ''}>
-                        ${owned ? 'Owned' : (canAfford ? 'Buy Now' : 'Too Expensive')}
-                    </button>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            // Add event listeners to buy buttons
-            document.querySelectorAll('[data-weapon-id]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const weaponId = parseInt(e.target.dataset.weaponId);
-                    buyWeapon(weaponId);
-                });
-            });
-        }
-        
-        // Initialize leaderboard
-        function initLeaderboard() {
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
-            
-            // Combine demo users with current user
-            const allUsers = [...demoUsers];
-            if (currentUser) {
-                const currentRank = ranks.find(rank => 
-                    playerState.xp >= rank.minXP && 
-                    (ranks.indexOf(rank) === ranks.length - 1 || 
-                     playerState.xp < ranks[ranks.indexOf(rank) + 1].minXP)
-                );
-                
-                allUsers.push({
-                    username: currentUser.username,
-                    money: playerState.money,
-                    xp: playerState.xp,
-                    crimes: playerState.crimesCommitted,
-                    rank: currentRank ? currentRank.name : "Snitch",
-                    isCurrent: true
-                });
-            }
-            
-            // Sort by money (descending)
-            allUsers.sort((a, b) => b.money - a.money);
-            
-            // Add rows to table
-            allUsers.forEach((user, index) => {
-                const row = document.createElement('tr');
-                if (user.isCurrent) row.classList.add('current-user');
-                
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${user.username}</td>
-                    <td>$${user.money.toLocaleString()}</td>
-                    <td>${user.xp.toLocaleString()}</td>
-                    <td>${user.crimes}</td>
-                    <td>${user.rank}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-        
-        // Initialize public chat
-        function initPublicChat() {
-            const chatContainer = document.getElementById('public-chat');
-            chatContainer.innerHTML = '';
-            
-            demoMessages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'message';
-                messageDiv.innerHTML = `
-                    <div class="message-header">
-                        <span class="message-sender">${msg.sender}</span>
-                        <span class="message-time">${msg.time}</span>
-                    </div>
-                    <div class="message-text">${msg.text}</div>
-                `;
-                chatContainer.appendChild(messageDiv);
-            });
-            
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Setup online users
-            const onlineUsers = document.getElementById('online-users');
-            onlineUsers.innerHTML = '';
-            
-            demoUsers.slice(0, 6).forEach(user => {
-                const userItem = document.createElement('li');
-                userItem.className = 'user-item';
-                userItem.innerHTML = `
-                    <div class="user-status"></div>
-                    <span>${user.username}</span>
-                `;
-                onlineUsers.appendChild(userItem);
-            });
-            
-            // Add current user
-            if (currentUser) {
-                const userItem = document.createElement('li');
-                userItem.className = 'user-item active';
-                userItem.innerHTML = `
-                    <div class="user-status"></div>
-                    <span>${currentUser.username} (You)</span>
-                `;
-                onlineUsers.appendChild(userItem);
-            }
-        }
-        
-        // Initialize inbox
-        function initInbox() {
-            const contactsContainer = document.getElementById('inbox-contacts');
-            contactsContainer.innerHTML = '';
-            
-            // Add demo contacts
-            demoUsers.slice(0, 5).forEach(user => {
-                const contactItem = document.createElement('li');
-                contactItem.className = 'user-item';
-                contactItem.dataset.username = user.username;
-                contactItem.innerHTML = `
-                    <div class="user-status"></div>
-                    <span>${user.username}</span>
-                `;
-                
-                contactItem.addEventListener('click', () => {
-                    document.querySelectorAll('.user-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    contactItem.classList.add('active');
-                    openPrivateChat(user.username);
-                });
-                
-                contactsContainer.appendChild(contactItem);
-            });
-            
-            // Add current user to contacts if not already there
-            if (currentUser && !playerState.contacts.includes(currentUser.username)) {
-                playerState.contacts.push(currentUser.username);
-            }
-            
-            // Set first contact as active by default
-            if (contactsContainer.firstChild) {
-                contactsContainer.firstChild.click();
-            }
-        }
-        
-        // Open private chat
-        function openPrivateChat(username) {
-            currentContact = username;
-            document.getElementById('current-contact').textContent = username;
-            
-            const chatContainer = document.getElementById('private-chat');
-            chatContainer.innerHTML = '';
-            
-            // Add demo messages
-            const messages = [
-                { sender: username, text: "You available for a job tomorrow?", time: "Yesterday" },
-                { sender: currentUser.username, text: "Depends. What's the job?", time: "Yesterday" },
-                { sender: username, text: "Warehouse heist. Your cut would be $15k", time: "Today" },
-                { sender: currentUser.username, text: "I'm in. Send me the details.", time: "Just now" }
-            ];
-            
-            messages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${msg.sender !== currentUser.username ? 'private-message' : ''}`;
-                messageDiv.innerHTML = `
-                    <div class="message-header">
-                        <span class="message-sender">${msg.sender}</span>
-                        <span class="message-time">${msg.time}</span>
-                    </div>
-                    <div class="message-text">${msg.text}</div>
-                `;
-                chatContainer.appendChild(messageDiv);
-            });
-            
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        // Load new users
-        function loadNewUsers() {
-            const container = document.getElementById('new-users-container');
-            container.innerHTML = '';
-            
-            demoUsers.slice(0, 4).forEach(user => {
-                const userCard = document.createElement('div');
-                userCard.className = 'user-card';
-                userCard.innerHTML = `
-                    <div class="user-avatar">
-                        <i class="fas fa-user-secret"></i>
-                    </div>
-                    <h3>${user.username}</h3>
-                    <p>Rank: ${user.rank}</p>
-                    <p>Crimes: ${user.crimes}</p>
-                `;
-                container.appendChild(userCard);
             });
         }
         
@@ -1371,14 +765,9 @@
         // Update player stats display
         function updatePlayerStats() {
             document.getElementById('player-name').textContent = playerState.name;
-            document.getElementById('player-money').textContent = playerState.money.toLocaleString();
-            document.getElementById('player-xp').textContent = playerState.xp.toLocaleString();
+            document.getElementById('player-money').textContent = playerState.money;
+            document.getElementById('player-xp').textContent = playerState.xp;
             document.getElementById('player-crimes').textContent = playerState.crimesCommitted;
-            
-            // Update weapons display
-            const weaponNames = playerState.weapons.map(w => w.name);
-            document.getElementById('player-weapons').textContent = 
-                weaponNames.length > 0 ? weaponNames.join(", ") : "None";
             
             // Update rank display
             const currentRank = ranks.find(rank => 
@@ -1399,31 +788,6 @@
             showNotification(`${crime.name} selected! Ready to commit...`);
         }
         
-        // Buy a weapon
-        function buyWeapon(weaponId) {
-            const weapon = weapons.find(w => w.id === weaponId);
-            if (!weapon) return;
-            
-            if (playerState.money < weapon.price) {
-                showNotification("Not enough money to buy this weapon!");
-                return;
-            }
-            
-            // Check if already owned
-            if (playerState.weapons.some(w => w.id === weaponId)) {
-                showNotification("You already own this weapon!");
-                return;
-            }
-            
-            // Purchase weapon
-            playerState.money -= weapon.price;
-            playerState.weapons.push(weapon);
-            
-            showNotification(`${weapon.name} purchased! Success rate increased.`);
-            updatePlayerStats();
-            initWeaponShop();
-        }
-        
         // Commit crime
         function commitCrime() {
             if (!currentCrime) return;
@@ -1438,18 +802,9 @@
                 return;
             }
             
-            // Calculate success with weapon boost
+            // Calculate success
             const attempts = playerState.crimeAttempts[currentCrime.name] || 0;
-            let successRate = Math.min(currentCrime.baseSuccess + (attempts * 2), 95);
-            
-            // Add weapon boost
-            playerState.weapons.forEach(weapon => {
-                successRate += weapon.successBoost;
-            });
-            
-            // Cap at 95%
-            successRate = Math.min(successRate, 95);
-            
+            const successRate = Math.min(currentCrime.baseSuccess + (attempts * 2), 95);
             const isSuccess = Math.random() * 100 < successRate;
             
             // Calculate reward
@@ -1473,6 +828,9 @@
                 playerState.money += reward;
             }
             
+            // Save game state
+            saveGameState();
+            
             // Show result screen
             showCrimeResult(isSuccess, reward);
             startCooldown();
@@ -1489,7 +847,7 @@
                 icon.innerHTML = '<i class="fas fa-trophy success"></i>';
                 title.textContent = "CRIME SUCCESSFUL!";
                 message.textContent = `You pulled off the ${currentCrime.name} without a hitch.`;
-                cash.textContent = `+$${reward.toLocaleString()}`;
+                cash.textContent = `+$${reward}`;
                 cash.style.color = "#4ade80";
             } else {
                 icon.innerHTML = '<i class="fas fa-skull-crossbones failure"></i>';
@@ -1543,24 +901,34 @@
                 xp: 0,
                 crimesCommitted: 0,
                 crimeAttempts: {},
-                lastCrimeTime: 0,
-                weapons: [],
-                contacts: [],
-                messages: {}
+                lastCrimeTime: 0
             };
-            
-            // Give starter weapon
-            playerState.weapons.push(weapons[0]);
             
             // Initialize UI
             initCrimeCards();
             initRankCards();
             updatePlayerStats();
             startCooldown();
-            loadNewUsers();
             
-            // Show dashboard
-            showScreen('dashboard');
+            // Save initial state
+            saveGameState();
+        }
+        
+        // Load existing game if possible
+        function loadExistingGame() {
+            const username = document.getElementById('login-username').value;
+            if (loadGameState(username)) {
+                // Initialize UI with loaded state
+                initCrimeCards();
+                initRankCards();
+                updatePlayerStats();
+                startCooldown();
+                
+                showScreen('dashboard');
+                showNotification(`Welcome back, ${currentUser.name}! Ready for crime?`);
+                return true;
+            }
+            return false;
         }
         
         // Event Listeners
@@ -1584,8 +952,12 @@
                 return;
             }
             
-            // In a real app, this would check against a database
-            // For this demo, we'll just simulate a login
+            // Try to load existing account
+            if (loadExistingGame()) {
+                return;
+            }
+            
+            // Create new account if doesn't exist
             currentUser = {
                 name: username,
                 username: username,
@@ -1594,6 +966,7 @@
             };
             
             initGame();
+            showScreen('dashboard');
             showNotification(`Welcome back, ${username}! Ready for crime?`);
         });
         
@@ -1609,8 +982,7 @@
                 return;
             }
             
-            // In a real app, this would create a user account
-            // For this demo, we'll just simulate account creation
+            // Create new account
             currentUser = {
                 name: name,
                 email: email,
@@ -1618,7 +990,18 @@
                 username: username
             };
             
+            // Create account in localStorage
+            createAccount(currentUser, {
+                name: name,
+                money: 1000,
+                xp: 0,
+                crimesCommitted: 0,
+                crimeAttempts: {},
+                lastCrimeTime: 0
+            });
+            
             initGame();
+            showScreen('dashboard');
             showNotification(`Welcome to Crime Lords, ${name}! Start your criminal empire.`);
         });
         
@@ -1628,121 +1011,12 @@
             initCrimeCards();
             initRankCards();
             updatePlayerStats();
+            saveGameState();
             showScreen('dashboard');
         });
         
-        // Navigation buttons
-        document.querySelectorAll('.nav-btn[data-screen]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const screenName = btn.dataset.screen;
-                showScreen(screenName);
-                
-                // Update active button
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
-                btn.classList.add('active');
-            });
-        });
-        
-        // Chat functionality
-        document.getElementById('send-public').addEventListener('click', () => {
-            const messageInput = document.getElementById('public-message');
-            const message = messageInput.value.trim();
-            
-            if (!message) {
-                showNotification("Please enter a message");
-                return;
-            }
-            
-            const chatContainer = document.getElementById('public-chat');
-            const now = new Date();
-            const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <span class="message-sender">${currentUser.username} (You)</span>
-                    <span class="message-time">${timeStr}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            `;
-            
-            chatContainer.appendChild(messageDiv);
-            messageInput.value = '';
-            
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            showNotification("Message sent to crime network");
-        });
-        
-        document.getElementById('send-private').addEventListener('click', () => {
-            if (!currentContact) {
-                showNotification("Please select a contact first");
-                return;
-            }
-            
-            const messageInput = document.getElementById('private-message');
-            const message = messageInput.value.trim();
-            
-            if (!message) {
-                showNotification("Please enter a message");
-                return;
-            }
-            
-            const chatContainer = document.getElementById('private-chat');
-            const now = new Date();
-            const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
-            // Add sent message
-            const sentMessageDiv = document.createElement('div');
-            sentMessageDiv.className = 'message';
-            sentMessageDiv.innerHTML = `
-                <div class="message-header">
-                    <span class="message-sender">${currentUser.username} (You)</span>
-                    <span class="message-time">${timeStr}</span>
-                </div>
-                <div class="message-text">${message}</div>
-            `;
-            
-            chatContainer.appendChild(sentMessageDiv);
-            
-            // Add received message (simulated response)
-            setTimeout(() => {
-                const responses = [
-                    "Sounds good. I'll send the details.",
-                    "Not interested right now.",
-                    "Meet me at the usual spot at midnight.",
-                    "The cops are watching, lay low for now.",
-                    "I have a better opportunity, interested?",
-                    "The payment will be in cash as usual."
-                ];
-                
-                const response = responses[Math.floor(Math.random() * responses.length)];
-                
-                const receivedMessageDiv = document.createElement('div');
-                receivedMessageDiv.className = 'message private-message';
-                receivedMessageDiv.innerHTML = `
-                    <div class="message-header">
-                        <span class="message-sender">${currentContact}</span>
-                        <span class="message-time">Just now</span>
-                    </div>
-                    <div class="message-text">${response}</div>
-                `;
-                
-                chatContainer.appendChild(receivedMessageDiv);
-                
-                // Scroll to bottom
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 2000);
-            
-            messageInput.value = '';
-            
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            showNotification(`Message sent to ${currentContact}`);
-        });
+        // Initialize accounts system
+        initAccounts();
         
         // Initialize the home screen
         showScreen('home');
@@ -1750,3 +1024,54 @@
 </body>
 </html>
 ```
+
+## How to Use This Game
+
+1. **Create an Account**:
+   - Click "Sign Up" on the home screen
+   - Fill in your criminal profile details
+   - Click "Join the Syndicate"
+
+2. **Play the Game**:
+   - Select a crime to commit from the cards
+   - Click "Commit Crime" to attempt the crime
+   - See if you succeed or fail
+   - Earn money and XP to rank up
+
+3. **Game Features**:
+   - Save system: All progress is saved to your browser
+   - 6 criminal ranks to achieve
+   - 6 different crimes to attempt
+   - Cooldown timer between crimes
+   - Detailed statistics tracking
+
+4. **Account Persistence**:
+   - Your game progress is saved automatically
+   - Log out and back in to continue where you left off
+   - Data is stored in your browser's localStorage
+
+## Implementation Details
+
+1. **Account System**:
+   - Uses localStorage to store all accounts
+   - Each account contains user info and game state
+   - Passwords are stored (in a real app, they would be hashed)
+
+2. **Game State Saving**:
+   - All game progress is saved after each action
+   - Automatic saving when you commit crimes
+   - Manual saving when you log out
+
+3. **Data Structure**:
+   - Accounts are stored under a single key
+   - Each account contains:
+     - User details (name, email, etc.)
+     - Game state (money, XP, crimes, etc.)
+
+4. **UI Features**:
+   - Visual save indicator when game is saved
+   - Notifications for all game events
+   - Detailed crime statistics
+   - Rank progression display
+
+To play the game, simply copy the entire code above into an HTML file and open it in your browser. All your progress will be saved automatically!
